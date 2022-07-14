@@ -11,6 +11,8 @@ import { BookService, BookDto } from '@proxy/books';
 export class BookComponent implements OnInit {
   book = { items: [], totalCount: 0 } as PagedResultDto<BookDto>;
 
+  isModalOpen = false; // add this line
+
   constructor(public readonly list: ListService, private bookService: BookService) {}
 
   ngOnInit() {
@@ -19,5 +21,10 @@ export class BookComponent implements OnInit {
     this.list.hookToQuery(bookStreamCreator).subscribe((response) => {
       this.book = response;
     });
+  }
+
+  // add new method
+  createBook() {
+    this.isModalOpen = true;
   }
 }
