@@ -12,6 +12,7 @@ using Volo.Abp.PermissionManagement.EntityFrameworkCore;
 using Volo.Abp.SettingManagement.EntityFrameworkCore;
 using Volo.Abp.TenantManagement;
 using Volo.Abp.TenantManagement.EntityFrameworkCore;
+using Acme.BookStore.Books;
 
 namespace Acme.BookStore.EntityFrameworkCore;
 
@@ -24,6 +25,7 @@ public class BookStoreDbContext :
     ITenantManagementDbContext
 {
     /* Add DbSet properties for your Aggregate Roots / Entities here. */
+    public DbSet<Book> Books { get; set; }
 
     #region Entities from the modules
 
@@ -74,6 +76,14 @@ public class BookStoreDbContext :
         builder.ConfigureTenantManagement();
 
         /* Configure your own tables/entities inside here */
+        builder.Entity<Book>(b =>
+        {
+            b.ToTable(BookStoreConsts.DbTablePrefix + "Books", 
+                BookStoreConsts.DbSchema);
+            b.ConfigureByConvention();
+            b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+        });
+
 
         //builder.Entity<YourEntity>(b =>
         //{
