@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Acme.BookStore.Books
 {
-    internal class CreateUpdateBookDto
+    public class CreateUpdateBookDto
     {
         [Required]
         [StringLength(128)]
