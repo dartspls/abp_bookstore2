@@ -1,5 +1,4 @@
-﻿
-namespace Acme.BookStore.Books
+﻿namespace Acme.BookStore.Books
 {
     public enum BookType
     {
