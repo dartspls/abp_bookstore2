@@ -16,6 +16,8 @@ import { NgbDateNativeAdapter, NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap
 export class BookComponent implements OnInit {
   book = { items: [], totalCount: 0 } as PagedResultDto<BookDto>;
 
+  selectedBook = {} as BookDto;
+
   form: FormGroup;
 
   bookTypes = bookTypeOptions; // list of BookType enum members
@@ -34,16 +36,28 @@ export class BookComponent implements OnInit {
 
   // add new method
   createBook() {
+    this.selectedBook = {} as BookDto;
     this.buildForm();
     this.isModalOpen = true;
   }
 
+  editBook(id: string) {
+    this.bookService.get(id).subscribe((book) => {
+      this.selectedBook = book;
+      this.buildForm();
+      this.isModalOpen = true;
+    });
+  }
+
   buildForm() {
     this.form = this.fb.group({
-      name: ['', Validators.required],
-      type: [null, Validators.required],
-      publishDate: [null, Validators.required],
-      price: [null, Validators.required],
+      name: [this.selectedBook.name || '', Validators.required],
+      type: [this.selectedBook.type || null, Validators.required],
+      publishDate: [
+        this.selectedBook.publishDate ? new Date(this.selectedBook.publishDate) : null, 
+        Validators.required,
+      ],
+      price: [this.selectedBook.price || null, Validators.required],
     });
   }
 
@@ -52,7 +66,11 @@ export class BookComponent implements OnInit {
       return;
     }
 
-    this.bookService.create(this.form.value).subscribe(() => {
+    const request = this.selectedBook.id
+      ? this.bookService.update(this.selectedBook.id, this.form.value)
+      : this.bookService.create(this.form.value);
+
+    request.subscribe(() => {
       this.isModalOpen = false;
       this.form.reset();
       this.list.get();
