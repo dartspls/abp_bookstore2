@@ -56,10 +56,13 @@ export class BookComponent implements OnInit {
   }
 
   delete(id: string) {
-    this.confirmation.warn('::AreYouSureToDelete', '::AreYouSure').subscribe((status) => {
-      if (status === Confirmation.Status.confirm) {
-        this.bookService.delete(id).subscribe(() => this.list.get());
-      }
+    this.bookService.get(id).subscribe((book) => {
+      this.selectedBook = book;
+      this.confirmation.warn('Are you sure you want to delete: ' + this.selectedBook.name + '?', '::AreYouSure').subscribe((status) => {
+        if (status === Confirmation.Status.confirm) {
+          this.bookService.delete(id).subscribe(() => this.list.get());
+        }
+      });
     });
   }
 
