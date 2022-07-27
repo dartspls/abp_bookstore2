@@ -88,6 +88,20 @@ public class BookStoreDbContext :
             b.Property(x => x.Name).IsRequired().HasMaxLength(128);
         });
 
+        builder.Entity<Author>(a =>
+        {
+            a.ToTable(BookStoreConsts.DbTablePrefix + "Authors",
+                BookStoreConsts.DbSchema);
+
+            a.ConfigureByConvention();
+
+            a.Property(p => p.Name)
+                .IsRequired()
+                .HasMaxLength(AuthorConsts.MaxNameLength);
+
+            a.HasIndex(x => x.Name);
+        });
+
 
         //builder.Entity<YourEntity>(b =>
         //{
